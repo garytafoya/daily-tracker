@@ -1,3 +1,9 @@
+export function getCurrentMonthAbbr() {
+  console.log('hi')
+  const date = new Date()
+  return date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
+}
+
 export function getCurrentFullMonth() {
   const date = new Date()
   return date.toLocaleString('default', { month: 'long' })

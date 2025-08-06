@@ -11,6 +11,7 @@
         <v-select
           class="ml-2"
           label="Month"
+          v-model="currentMonthAbbr"
           :items="['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']"
         ></v-select>
       </v-col>
@@ -18,7 +19,8 @@
       <v-select
         class="mr-2"
         label="Year"
-        :items="['2005', '2006']"
+        v-model="currentYear"
+        :items="['2005']"
       ></v-select>
       </v-col>
     </v-row>
@@ -111,12 +113,13 @@
 </template>
 
 <script setup>
-import { getCurrentFullMonth, getDaysInMonth, getDaysLeftInMonth, averageByDate } from '@/js/utilities.js'
+import { getCurrentMonthAbbr, getCurrentFullMonth, getDaysInMonth, getDaysLeftInMonth, averageByDate } from '@/js/utilities.js'
 import AddExpense from '@/components/AddExpense.vue'
 import { useExpenseStore } from '@/stores/expenseStore'
 
 const expenseStore = useExpenseStore()
 
+const currentMonthAbbr = ref('')
 const currentMonth = ref('')
 const currentYear = ref('')
 const addExpense = ref('')
@@ -130,6 +133,7 @@ onMounted(() => {
   const date = new Date()
   currentMonth.value = date.toLocaleString('default', { month: 'long' })
   currentYear.value = date.getFullYear()
+  currentMonthAbbr.value = getCurrentMonthAbbr()
 
   expenseStore.loadMonthlyExpenses(currentMonth.value, currentYear.value).then(() =>{
     currentMonth.value = getCurrentFullMonth()
