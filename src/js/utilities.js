@@ -1,5 +1,4 @@
 export function getCurrentMonthAbbr() {
-  console.log('hi')
   const date = new Date()
   return date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
 }
@@ -7,11 +6,6 @@ export function getCurrentMonthAbbr() {
 export function getCurrentFullMonth() {
   const date = new Date()
   return date.toLocaleString('default', { month: 'long' })
-}
-
-export function getCurrentYear() {
-  const date = new Date()
-  return date.getFullYear()
 }
 
 export const getDaysInMonth = (month, year) => {

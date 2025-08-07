@@ -1,6 +1,6 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { dbGetExpensesByMonthAndYear } from '@/js/db'
+import { dbGetExpensesByMonthYear } from '@/js/db'
 import { calculateTotalMonthlySpend, calculateAverageExpenseAmount } from '@/js/utilities'
 
 
@@ -11,19 +11,12 @@ export const useExpenseStore = defineStore('expenses', {
   }),
 
   actions: {
-    async loadMonthlyExpenses(date) {
+    async loadMonthlyExpenses(month, year) {
+      console.log(typeof month)
+      console.log(typeof year)
       try{
-        const response = await dbGetExpensesByMonthAndYear(date)
-        
-        let updatedResponse = response.map(item => ({
-          ...item,
-          poop: 'yup we got it'
-        }))
-
-
-        
-        console.log(updatedResponse)
-        this.monthlyExpenses = updatedResponse
+        const response = await dbGetExpensesByMonthYear(month, year)
+        this.monthlyExpenses = response
       }
       catch (err) {
         console.log(err.message)

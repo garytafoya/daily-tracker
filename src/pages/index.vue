@@ -125,19 +125,19 @@ const currentYear = ref('')
 const addExpense = ref('')
 
 const headers = ref( [
-  { title: 'DATE', align: 'center', key: 'displayDate' },
-  { title: 'AMOUNT', align: 'center', key: 'value' },
+  { title: 'DATE', align: 'center', key: 'date' },
+  { title: 'AMOUNT', align: 'center', key: 'amount' },
 ])
 
 onMounted(() => {
   const date = new Date()
   currentMonth.value = date.toLocaleString('default', { month: 'long' })
-  currentYear.value = date.getFullYear()
+  currentYear.value = String(date.getFullYear())
   currentMonthAbbr.value = getCurrentMonthAbbr()
 
-  expenseStore.loadMonthlyExpenses(currentMonth.value, currentYear.value).then(() =>{
+  expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
     currentMonth.value = getCurrentFullMonth()
-    console.log(averageByDate(expenses.value))
+    // console.log(averageByDate(expenses.value))
   })
 })
 

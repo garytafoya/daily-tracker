@@ -13,29 +13,27 @@
             <v-col
               cols="12"
             >
-            <v-text-field
-                  variant="outlined"
-                  density="compact"
-                  label="Date *"
-                  v-model="expenseDate"
-                  type="date"
-                  required
-                >
-            </v-text-field>
+              <v-text-field
+                variant="outlined"
+                density="compact"
+                label="Date *"
+                v-model="expenseDate"
+                type="date"
+                required
+              >
+              </v-text-field>
 
-
-
-            <v-text-field
-              ref="inputRef"
-              type="number" 
-              class="custom-input custom-font" 
-              label="Amount" 
-              prefix="$"
-              v-model="expenseAmount"
-              @keypress="onlyAllowDigits"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+              <v-text-field
+                ref="inputRef"
+                type="number" 
+                class="custom-input custom-font" 
+                label="Amount" 
+                prefix="$"
+                v-model="expenseAmount"
+                @keypress="onlyAllowDigits"
+                ></v-text-field>
+              </v-col>
+            </v-row>
 
         </v-card-text>
 
@@ -64,6 +62,7 @@
 
 <script setup>
 import { ref, defineExpose, watch, nextTick } from 'vue'
+import { getCurrentMonthAbbr } from '@/js/utilities.js'
 import { dbAddExpense } from '@/js/db.js'
 import { useExpenseStore } from '@/stores/expenseStore'
 
@@ -108,10 +107,12 @@ const submitExpense = async () => {
   dbAddExpense(
     {
     date: expenseDate.value,
+    searchMonth: getCurrentMonthAbbr(),
+    searchYear: String(new Date().getFullYear()),
     amount: expenseAmount.value
     }
   ).then(() => {
-    expenseStore.loadMonthlyExpenses(expenseDate.value)
+    expenseStore.loadMonthlyExpenses(getCurrentMonthAbbr(), String(new Date().getFullYear()))
   })
 
 
