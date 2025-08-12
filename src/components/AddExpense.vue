@@ -71,7 +71,9 @@ const expenseStore = useExpenseStore()
 
 const dialog = ref(false)
 const today = new Date().toISOString().split('T')[0]
-const expenseDate = ref(today)
+const expenseDate = ref(new Date().toLocaleDateString('en-CA'))
+//const expenseDate = ref(today)
+
 const expenseAmount = ref('')
 const input = ref('')
 const inputRef = ref(null)

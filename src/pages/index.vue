@@ -13,6 +13,7 @@
           label="Month"
           v-model="currentMonthAbbr"
           :items="['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']"
+          @update:model-value="loadExpenses()"
         ></v-select>
       </v-col>
       <v-col>
@@ -187,6 +188,12 @@ const percentMonthComplete = computed(() => {
 const addExpenseToDB = () => {
   console.log('adding expense')
   addExpense.value.openAddExpenseDialog()
+}
+
+const loadExpenses = () => {
+  expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
+    console.log('done loading expenses')
+  })
 }
 
 </script>
