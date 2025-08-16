@@ -144,7 +144,9 @@ onMounted(() => {
 
 // COMPUTED FUNCTIONS
 const expenses = computed (() => {
-  return expenseStore.getMonthlyExpenses
+  let tmpExpenses = expenseStore.getMonthlyExpenses
+  tmpExpenses.sort((a, b) => new Date(a.date) - new Date(b.date))
+  return tmpExpenses
 })
 
 const monthlyLimit = computed (() => {

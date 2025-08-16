@@ -26,14 +26,14 @@ export const getDaysLeftInMonth = (date = new Date()) => {
 
 export function calculateTotalMonthlySpend(expenses) {
   return expenses.reduce((total, expense) => {
-    const num = parseFloat(expense.value)
+    const num = parseFloat(expense.amount)
     return total + (isNaN(num) ? 0 : num)
   }, 0)
 }
 
 export const calculateAverageExpenseAmount = (expenses) => {
   const validNumbers = expenses
-    .map(expense => parseFloat(expense.value))
+    .map(amount => parseFloat(amount.value))
     .filter(num => !isNaN(num))
 
   if (validNumbers.length === 0) return 0
