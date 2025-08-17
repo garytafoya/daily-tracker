@@ -49,8 +49,8 @@ export const averageByDate = (items = []) => {
 
   const grouped = {}
 
-  items.forEach(({ date, value }) => {
-    const num = parseFloat(value)
+  items.forEach(({ date, amount }) => {
+    const num = parseFloat(amount)
     if (!isNaN(num)) {
       if (!grouped[date]) {
         grouped[date] = { total: 0, count: 0 }
@@ -62,7 +62,7 @@ export const averageByDate = (items = []) => {
 
   return Object.entries(grouped).map(([date, { total, count }]) => ({
     date,
-    average: total / count
+    total: total
   }))
 }
 

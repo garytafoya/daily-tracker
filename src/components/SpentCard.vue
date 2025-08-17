@@ -1,12 +1,9 @@
 <template>
   <v-card>
-    
-    <!-- {{spent}} -->
-
-
     <v-container>
-      <v-row>
+      <v-row justify="space-between">
         <p class="text-overline ml-2 mb-2">Spent</p>
+        <p class="text-overline mr-2 mb-2">Limit</p>
       </v-row>
       <v-row justify="space-between">
         <p class="text-h5 font-weight-light ml-2">${{ spent }}</p>
@@ -23,12 +20,6 @@
 <script setup>
 
 import { ref } from 'vue'
-// const percentToGoal = ref()
-
-// const props = defineProps({
-//   spent: String,
-//   goal: String
-// })
 
 const props = defineProps({
   spent: String,
@@ -38,9 +29,5 @@ const props = defineProps({
 const percentToGoal = computed (() => {
   return (((props.spent / props.goal) * 100).toFixed(0))
 })
-
-
-
-
 
 </script>

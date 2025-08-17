@@ -5,7 +5,6 @@
       <h1 class="text-h3 font-weight-bold text-center">Daily Tracker</h1>
     </v-row>
 
-
     <v-row justify="center">
       <v-col>
         <v-select
@@ -21,9 +20,14 @@
         class="mr-2"
         label="Year"
         v-model="currentYear"
-        :items="['2005']"
+        :items="['2025']"
       ></v-select>
       </v-col>
+    </v-row>
+
+    <v-row class="mt-5" justify="center">
+      <div class="text-h4">{{currentMonthAbbr}} {{currentYear}}</div>
+      <v-btn class="ml-2" size="small" color="green-lighten-1" icon="mdi-plus" @click="addExpenseToDB()"></v-btn>
     </v-row>
 
     <v-row>
@@ -46,27 +50,21 @@
         <daily-spend-card :amount="adjustedDailySpendingLimit"></daily-spend-card>
       </v-col>
       <v-col>
-        <average-daily-spend-card average=""></average-daily-spend-card>
+        <average-daily-spend-card :average="averageDailySpend"></average-daily-spend-card>
       </v-col>
     </v-row>
 
-  <v-row class="mt-5" justify="center">
-    <div class="text-h4">{{currentMonth}} {{currentYear}}</div>
-    <v-col cols="auto">
-      <v-btn size="small" color="green-lighten-1" icon="mdi-plus" @click="addExpenseToDB()"></v-btn>
-    </v-col>
-  </v-row>
+    <v-btn @click="tmpFN">HI</v-btn>
 
-  <v-data-table
-    class="mt-5"
-    :items="expenses"
-    :headers="headers"
-    items-per-page="-1"
-    hide-default-footer
-    density="compact"
-  >
-  </v-data-table>
-
+    <v-data-table
+      class="mt-5"
+      :items="expenses"
+      :headers="headers"
+      items-per-page="-1"
+      hide-default-footer
+      density="compact"
+    >
+    </v-data-table>
 
   </v-container>
   <add-expense ref="addExpense"></add-expense>
@@ -81,8 +79,6 @@ import PercentSpentCard from '@/components/PercentSpentCard.vue'
 import AverageDailySpendCard from '@/components/AverageDailySpendCard.vue'
 import DailySpendCard from '@/components/DailySpendCard.vue'
 import PercentMonthCompleteCard from '@/components/PercentMonthCompleteCard.vue'
-
-
 
 import { useExpenseStore } from '@/stores/expenseStore'
 
@@ -106,14 +102,13 @@ onMounted(() => {
 
   expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
     currentMonth.value = getCurrentFullMonth()
-    // console.log(averageByDate(expenses.value))
   })
 })
 
 // COMPUTED FUNCTIONS
 const expenses = computed (() => {
   let tmpExpenses = expenseStore.getMonthlyExpenses
-  tmpExpenses.sort((a, b) => new Date(a.date) - new Date(b.date))
+  tmpExpenses.sort((a, b) => new Date(b.date) - new Date(a.date))
   return tmpExpenses
 })
 
@@ -153,6 +148,12 @@ const percentMonthComplete = computed(() => {
   return Number(percentComplete).toFixed(0)
 })
 
+const averageDailySpend = computed(() =>{
+  return 44
+})
+
+
+
 
 // STANDARD FUNCTIONS
 const addExpenseToDB = () => {
@@ -164,6 +165,13 @@ const loadExpenses = () => {
   expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
     console.log('done loading expenses')
   })
+}
+
+
+const tmpFN = () => {
+  const tmp = expenseStore.getMonthlyExpenses
+  const tmp1 = averageByDate(expenseStore.getMonthlyExpenses)
+  console.log(tmp1)
 }
 
 </script>
