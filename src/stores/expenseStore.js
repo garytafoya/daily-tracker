@@ -6,14 +6,12 @@ import { calculateTotalMonthlySpend, calculateAverageExpenseAmount } from '@/js/
 
 export const useExpenseStore = defineStore('expenses', {
   state: () => ({
-    monthlyLimit: '1200',
+    monthlyLimit: 1200,
     monthlyExpenses: []
   }),
 
   actions: {
     async loadMonthlyExpenses(month, year) {
-      console.log(typeof month)
-      console.log(typeof year)
       try{
         const response = await dbGetExpensesByMonthYear(month, year)
         this.monthlyExpenses = response

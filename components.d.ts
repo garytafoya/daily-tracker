@@ -9,7 +9,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddExpense: typeof import('./src/components/AddExpense.vue')['default']
+    AverageDailySpendCard: typeof import('./src/components/AverageDailySpendCard.vue')['default']
+    DailySpendCard: typeof import('./src/components/DailySpendCard.vue')['default']
+    PercentMonthCompleteCard: typeof import('./src/components/PercentMonthCompleteCard.vue')['default']
+    PercentSpentCard: typeof import('./src/components/PercentSpentCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SpentCard: typeof import('./src/components/SpentCard.vue')['default']
   }
 }
