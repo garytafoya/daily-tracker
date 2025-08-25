@@ -42,13 +42,13 @@ export const calculateAverageExpenseAmount = (expenses) => {
   return total / validNumbers.length
 }
 
+
 export const averageByDate = (items = []) => {
   if (!Array.isArray(items)) {
     throw new Error('Expected an array of objects')
   }
 
   const grouped = {}
-
   items.forEach(({ date, amount }) => {
     const num = parseFloat(amount)
     if (!isNaN(num)) {
@@ -60,10 +60,14 @@ export const averageByDate = (items = []) => {
     }
   })
 
-  return Object.entries(grouped).map(([date, { total, count }]) => ({
+  const totals = Object.entries(grouped).map(([date, { total, count }]) => ({
     date,
     total: total
   }))
+
+  if (!totals.length) return 0
+  const sum = totals.reduce((total, item) => total + item.total, 0)
+  return (sum / totals.length).toFixed(0)
 }
 
 

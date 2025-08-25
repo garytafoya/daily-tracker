@@ -41,7 +41,7 @@
         <percent-spent-card :percent="percentBudgetSpent"></percent-spent-card>
       </v-col>
       <v-col>
-        <percent-month-complete-card :percent="percentMonthComplete"></percent-month-complete-card>
+        <days-left-card :percent="getDaysLeftInMonth()"></days-left-card>
       </v-col>
     </v-row>
 
@@ -54,8 +54,6 @@
       </v-col>
     </v-row>
 
-    <v-btn @click="tmpFN">HI</v-btn>
-
     <v-data-table
       class="mt-5"
       :items="expenses"
@@ -64,6 +62,14 @@
       hide-default-footer
       density="compact"
     >
+      <template v-slot:item.amount="{ value }">
+        <p class="text-h6">${{ value }}</p>
+      </template>
+
+      <template v-slot:item.date="{ value }">
+        <p class="text-h6">{{ formatDateForTable(value) }}</p>
+      </template>
+
     </v-data-table>
 
   </v-container>
@@ -78,7 +84,7 @@ import SpentCard from '@/components/SpentCard.vue'
 import PercentSpentCard from '@/components/PercentSpentCard.vue'
 import AverageDailySpendCard from '@/components/AverageDailySpendCard.vue'
 import DailySpendCard from '@/components/DailySpendCard.vue'
-import PercentMonthCompleteCard from '@/components/PercentMonthCompleteCard.vue'
+import DaysLeftCard from '@/components/DaysLeftCard.vue'
 
 import { useExpenseStore } from '@/stores/expenseStore'
 
@@ -144,12 +150,22 @@ const percentBudgetSpent = computed(() => {
 })
 
 const percentMonthComplete = computed(() => {
-  const percentComplete = (getDaysLeftInMonth() / getDaysInMonth(currentMonth.value, currentYear.value) * 100)
+
+  const daysLeft = getDaysLeftInMonth()
+  const totalDays = getDaysInMonth(currentMonth.value, currentYear.value)
+  const daysPast = getDaysInMonth(currentMonth.value, currentYear.value) - daysLeft
+
+  const percentComplete = (daysPast / totalDays) * 100
   return Number(percentComplete).toFixed(0)
 })
 
+
+
+
+
 const averageDailySpend = computed(() =>{
-  return 44
+  const tmp = expenseStore.getMonthlyExpenses
+  return averageByDate(tmp)
 })
 
 
@@ -167,11 +183,13 @@ const loadExpenses = () => {
   })
 }
 
-
-const tmpFN = () => {
-  const tmp = expenseStore.getMonthlyExpenses
-  const tmp1 = averageByDate(expenseStore.getMonthlyExpenses)
-  console.log(tmp1)
+const formatDateForTable = (dateStr) => {
+  const [year, month, day] = dateStr.split('-')
+  return `${parseInt(month)}/${parseInt(day)}`
 }
 
 </script>
+
+<style scoped>
+
+</style>

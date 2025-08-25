@@ -11,7 +11,7 @@ declare module 'vue' {
     AddExpense: typeof import('./src/components/AddExpense.vue')['default']
     AverageDailySpendCard: typeof import('./src/components/AverageDailySpendCard.vue')['default']
     DailySpendCard: typeof import('./src/components/DailySpendCard.vue')['default']
-    PercentMonthCompleteCard: typeof import('./src/components/PercentMonthCompleteCard.vue')['default']
+    DaysLeftCard: typeof import('./src/components/DaysLeftCard.vue')['default']
     PercentSpentCard: typeof import('./src/components/PercentSpentCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
