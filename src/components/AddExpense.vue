@@ -3,32 +3,28 @@
     <v-dialog
       v-model="dialog"
       max-width="600"
+      class="dialog-top"
     >
-
-      <v-card
-        title="Add Expense"
-      >
+      <v-card title="Add Expense">
         <v-card-text>
           <v-row dense>
-            <v-col
-              cols="12"
-            >
+            <v-col cols="12">
+              <p class="">Date *</p>
               <v-text-field
                 variant="outlined"
-                density="compact"
-                label="Date *"
+                density="comfortable"
                 v-model="expenseDate"
                 type="date"
                 required
               >
               </v-text-field>
 
+              <p class="">Expense Amount *</p>
               <v-text-field
                 ref="inputRef"
                 type="number" 
-                class="custom-input custom-font" 
-                label="Amount" 
                 prefix="$"
+                density="comfortable"
                 v-model="expenseAmount"
                 @keypress="onlyAllowDigits"
                 ></v-text-field>
@@ -72,7 +68,6 @@ const expenseStore = useExpenseStore()
 const dialog = ref(false)
 const today = new Date().toISOString().split('T')[0]
 const expenseDate = ref(new Date().toLocaleDateString('en-CA'))
-//const expenseDate = ref(today)
 
 const expenseAmount = ref('')
 const input = ref('')
@@ -104,28 +99,25 @@ const openAddExpenseDialog = () => {
 const submitExpense = async () => {
 
   dialog.value = false
-  console.log('submitting: ' + expenseDate.value)
+  
+  const date = new Date(expenseDate.value)
+  console.log(date)
+  const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
+  const year = date.getFullYear()
+  console.log(month)
+  console.log(year)
+
 
   dbAddExpense(
     {
     date: expenseDate.value,
-    searchMonth: getCurrentMonthAbbr(),
-    searchYear: String(new Date().getFullYear()),
+    searchMonth: month,
+    searchYear: year.toString(),
     amount: expenseAmount.value
     }
   ).then(() => {
     expenseStore.loadMonthlyExpenses(getCurrentMonthAbbr(), String(new Date().getFullYear()))
   })
-
-
-  // const date = new Date()
-  // const month = date.toLocaleString('default', { month: 'long' })
-  // const year = date.getFullYear()
-
-  // dbAddExpense(expenseAmount.value).then(() => {
-  //   expenseStore.loadMonthlyExpenses(month, year)
-  // })
-
 }
 
 // Functions to Expose to Parent
@@ -138,12 +130,9 @@ defineExpose({
 
 
 <style scoped>
-.custom-input {
-  height: 100px;
-}
-
-.custom-font ::v-deep .v-field__input {
-  font-size: 50px;
-  text-align: center;
+.dialog-top {
+  align-items: flex-start !important;   /* vertical alignment */
+  justify-content: center !important;  /* keep it horizontally centered */
+  padding-top: 20px !important;        /* optional spacing from top */
 }
 </style>

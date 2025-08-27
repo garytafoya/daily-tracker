@@ -27,7 +27,7 @@
 
     <v-row class="mt-5" justify="center">
       <div class="text-h4">{{currentMonthAbbr}} {{currentYear}}</div>
-      <v-btn class="ml-2" size="small" color="green-lighten-1" icon="mdi-plus" @click="addExpenseToDB()"></v-btn>
+      <v-btn class="ml-2" size="small" color="primary" icon="mdi-plus" @click="addExpenseToDB()"></v-btn>
     </v-row>
 
     <v-row>
@@ -41,7 +41,7 @@
         <percent-spent-card :percent="percentBudgetSpent"></percent-spent-card>
       </v-col>
       <v-col>
-        <days-left-card :percent="getDaysLeftInMonth()"></days-left-card>
+        <days-left-card :percent="getDaysLeftInMonth().toLocaleString()"></days-left-card>
       </v-col>
     </v-row>
 
@@ -50,7 +50,7 @@
         <daily-spend-card :amount="adjustedDailySpendingLimit"></daily-spend-card>
       </v-col>
       <v-col>
-        <average-daily-spend-card :average="averageDailySpend"></average-daily-spend-card>
+        <average-daily-spend-card :average="averageDailySpend.toLocaleString()"></average-daily-spend-card>
       </v-col>
     </v-row>
 
@@ -62,24 +62,26 @@
       hide-default-footer
       density="compact"
     >
-      <template v-slot:item.amount="{ value }">
-        <p class="text-h6">${{ value }}</p>
-      </template>
 
-      <template v-slot:item.date="{ value }">
-        <p class="text-h6">{{ formatDateForTable(value) }}</p>
-      </template>
+    <template v-slot:item="{ item }">
+      <tr class="text-no-wrap">
+        <td class="text-h6 text-center">{{ formatDateForTable(item.date) }}</td>
+        <td class="text-h6 text-center" @click="deleteExpenseFromDB(item)">${{ item.amount }}</td>
+      </tr>
+    </template>
 
     </v-data-table>
 
   </v-container>
   <add-expense ref="addExpense"></add-expense>
+  <delete-expense ref="deleteExpense"></delete-expense>
 
 </template>
 
 <script setup>
 import { getCurrentMonthAbbr, getCurrentFullMonth, getDaysInMonth, getDaysLeftInMonth, averageByDate } from '@/js/utilities.js'
 import AddExpense from '@/components/AddExpense.vue'
+import DeleteExpense from '@/components/DeleteExpense.vue'
 import SpentCard from '@/components/SpentCard.vue'
 import PercentSpentCard from '@/components/PercentSpentCard.vue'
 import AverageDailySpendCard from '@/components/AverageDailySpendCard.vue'
@@ -94,6 +96,8 @@ const currentMonthAbbr = ref('')
 const currentMonth = ref('')
 const currentYear = ref('')
 const addExpense = ref('')
+const deleteExpense = ref('')
+
 
 const headers = ref( [
   { title: 'DATE', align: 'center', key: 'date' },
@@ -107,7 +111,11 @@ onMounted(() => {
   currentMonthAbbr.value = getCurrentMonthAbbr()
 
   expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
-    currentMonth.value = getCurrentFullMonth()
+    
+    expenseStore.loadSpendingLimit().then(() => {
+      currentMonth.value = getCurrentFullMonth()
+    })
+    
   })
 })
 
@@ -160,9 +168,6 @@ const percentMonthComplete = computed(() => {
 })
 
 
-
-
-
 const averageDailySpend = computed(() =>{
   const tmp = expenseStore.getMonthlyExpenses
   return averageByDate(tmp)
@@ -181,6 +186,11 @@ const loadExpenses = () => {
   expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
     console.log('done loading expenses')
   })
+}
+
+const deleteExpenseFromDB = (expense) => {
+  console.log('Deleting...')
+  deleteExpense.value.openDeleteExpenseDialog(expense)
 }
 
 const formatDateForTable = (dateStr) => {

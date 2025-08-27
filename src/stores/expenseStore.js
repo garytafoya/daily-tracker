@@ -1,16 +1,25 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { dbGetExpensesByMonthYear } from '@/js/db'
+import { dbGetExpensesByMonthYear, dbGetSpendingLimit } from '@/js/db'
 import { calculateTotalMonthlySpend, calculateAverageExpenseAmount } from '@/js/utilities'
 
 
 export const useExpenseStore = defineStore('expenses', {
   state: () => ({
-    monthlyLimit: 1200,
+    monthlyLimit: 1100,
     monthlyExpenses: []
   }),
 
   actions: {
+    async loadSpendingLimit() {
+      try{
+        const response = await dbGetSpendingLimit()
+        this.monthlyLimit = response
+      }
+      catch (err) {
+        console.log(err.message)
+      }
+    },
     async loadMonthlyExpenses(month, year) {
       try{
         const response = await dbGetExpensesByMonthYear(month, year)
