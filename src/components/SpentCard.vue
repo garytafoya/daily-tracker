@@ -9,14 +9,14 @@
         </p>
       </v-row>
       <v-row justify="space-between">
-        <p class="text-h5 font-weight-light ml-1">${{ spent }}</p>
-        <p class="text-h6 font-weight-light ml-1">${{ (goal - spent) }}</p>
-        <p class="text-h5 font-weight-light mr-1">${{ goal }}</p>
+        <p class="text-h5 font-weight-light ml-1">${{ totalSpent }}</p>
+        <p class="text-h6 font-weight-light ml-1">${{ (monthlyLimit - totalSpent) }}</p>
+        <p class="text-h5 font-weight-light mr-1">${{ monthlyLimit }}</p>
       </v-row>
     </v-container>
 
     <v-row>
-      <v-progress-linear class="mb-5 mt-3" color="primary" rounded-bar :model-value="percentToGoal" height="20"></v-progress-linear>
+      <v-progress-linear class="mb-5 mt-3" color="primary" rounded-bar :model-value="percentSpent" height="20"></v-progress-linear>
     </v-row>
   </v-card>
   <set-spend-limit ref="setSpendLimit"></set-spend-limit>
@@ -26,22 +26,27 @@
 
 import { ref } from 'vue'
 import SetSpendLimit from '@/components/SetSpendLimit.vue'
-
+import { useExpenseStore } from '@/stores/expenseStore'
+const expenseStore = useExpenseStore()
 const setSpendLimit = ref('')
 
-const props = defineProps({
-  spent: Number,
-  goal: Number
+//Computed Functions
+const totalSpent = computed (() => {
+  return expenseStore.getTotalSpent
 })
 
-const percentToGoal = computed (() => {
-  return (((props.spent / props.goal) * 100).toFixed(0))
+const monthlyLimit = computed (() => {
+  return expenseStore.getMonthlyLimit
 })
 
+const percentSpent = computed (() => {
+  return expenseStore.getPercentSpent
+})
+
+//Standard Functions
 const openSetSpendLimit = () => {
   console.log('setting spend limit')
   setSpendLimit.value.openSetSpendingLimitDialog()
 }
-
 
 </script>

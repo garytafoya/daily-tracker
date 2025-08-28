@@ -9,7 +9,7 @@
         <p class="text-overline ml-2">Daily Limit</p>
       </v-row>
       <v-row justify="space-between">
-        <p class="text-h4 font-weight-light ml-2">${{ amount }}</p>
+        <p class="text-h4 font-weight-light ml-2">${{ dailyLimit }}</p>
       </v-row>
     </v-container>
   
@@ -19,9 +19,12 @@
 <script setup>
 
 import { ref } from 'vue'
+import { useExpenseStore } from '@/stores/expenseStore'
+const expenseStore = useExpenseStore()
 
-const props = defineProps({
-  amount: String
+//Computed Functions
+const dailyLimit = computed (() => {
+  return expenseStore.getDailyLimit
 })
 
 </script>

@@ -1,3 +1,12 @@
+export function getFullMonthFromShortMonth(shortMonth) {
+  const date = new Date(`${shortMonth} 1, 2000`) // year & day don’t matter
+  return date.toLocaleString('default', { month: 'long' })
+}
+
+
+
+
+
 export function getCurrentMonthAbbr() {
   const date = new Date()
   return date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
@@ -14,6 +23,11 @@ export const getDaysInMonth = (month, year) => {
 
   return new Date(year, monthIndex + 1, 0).getDate()
 }
+
+
+
+
+// Functions that supply data to the cards
 
 export const getDaysLeftInMonth = (date = new Date()) => {
   const year = date.getFullYear()

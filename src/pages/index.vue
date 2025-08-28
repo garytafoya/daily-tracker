@@ -10,7 +10,7 @@
         <v-select
           class="ml-2"
           label="Month"
-          v-model="currentMonthAbbr"
+          v-model="selectedMonth"
           :items="['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']"
           @update:model-value="loadExpenses()"
         ></v-select>
@@ -19,38 +19,38 @@
       <v-select
         class="mr-2"
         label="Year"
-        v-model="currentYear"
+        v-model="selectedYear"
         :items="['2025']"
       ></v-select>
       </v-col>
     </v-row>
 
     <v-row class="mt-5" justify="center">
-      <div class="text-h4">{{currentMonthAbbr}} {{currentYear}}</div>
+      <div class="text-h4">{{selectedMonth}} {{selectedYear}}</div>
       <v-btn class="ml-2" size="small" color="primary" icon="mdi-plus" @click="addExpenseToDB()"></v-btn>
     </v-row>
 
     <v-row>
       <v-col>
-        <spent-card :spent="monthlyTotal" :goal="monthlyLimit"></spent-card>
+        <spent-card></spent-card>
       </v-col>
     </v-row>
 
     <v-row>
       <v-col>
-        <percent-spent-card :percent="percentBudgetSpent"></percent-spent-card>
+        <percent-spent-card></percent-spent-card>
       </v-col>
       <v-col>
-        <days-left-card :percent="getDaysLeftInMonth().toLocaleString()"></days-left-card>
+        <days-left-card></days-left-card>
       </v-col>
     </v-row>
 
     <v-row>
       <v-col>
-        <daily-spend-card :amount="adjustedDailySpendingLimit"></daily-spend-card>
+        <daily-spend-card></daily-spend-card>
       </v-col>
       <v-col>
-        <average-daily-spend-card :average="averageDailySpend.toLocaleString()"></average-daily-spend-card>
+        <average-daily-spend-card></average-daily-spend-card>
       </v-col>
     </v-row>
 
@@ -62,24 +62,20 @@
       hide-default-footer
       density="compact"
     >
-
-    <template v-slot:item="{ item }">
-      <tr class="text-no-wrap">
-        <td class="text-h6 text-center">{{ formatDateForTable(item.date) }}</td>
-        <td class="text-h6 text-center" @click="deleteExpenseFromDB(item)">${{ item.amount }}</td>
-      </tr>
-    </template>
-
+      <template v-slot:item="{ item }">
+        <tr class="text-no-wrap">
+          <td class="text-h6 text-center">{{ formatDateForTable(item.date) }}</td>
+          <td class="text-h6 text-center" @click="deleteExpenseFromDB(item)">${{ item.amount }}</td>
+        </tr>
+      </template>
     </v-data-table>
 
   </v-container>
   <add-expense ref="addExpense"></add-expense>
   <delete-expense ref="deleteExpense"></delete-expense>
-
 </template>
 
 <script setup>
-import { getCurrentMonthAbbr, getCurrentFullMonth, getDaysInMonth, getDaysLeftInMonth, averageByDate } from '@/js/utilities.js'
 import AddExpense from '@/components/AddExpense.vue'
 import DeleteExpense from '@/components/DeleteExpense.vue'
 import SpentCard from '@/components/SpentCard.vue'
@@ -92,12 +88,13 @@ import { useExpenseStore } from '@/stores/expenseStore'
 
 const expenseStore = useExpenseStore()
 
+const selectedMonth = ref('')
+const selectedYear = ref ('')
+
 const currentMonthAbbr = ref('')
-const currentMonth = ref('')
 const currentYear = ref('')
 const addExpense = ref('')
 const deleteExpense = ref('')
-
 
 const headers = ref( [
   { title: 'DATE', align: 'center', key: 'date' },
@@ -105,17 +102,16 @@ const headers = ref( [
 ])
 
 onMounted(() => {
+  //Get the current month/year to set the dropdown defaults
+  //and save it in the store
   const date = new Date()
-  currentMonth.value = date.toLocaleString('default', { month: 'long' })
-  currentYear.value = String(date.getFullYear())
-  currentMonthAbbr.value = getCurrentMonthAbbr()
+  selectedMonth.value = date.toLocaleString('default', { month: 'short' }).toUpperCase()
+  selectedYear.value = String(date.getFullYear())
+  expenseStore.setSelectedMonthAndYear(selectedMonth.value, selectedYear.value)
 
-  expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
-    
-    expenseStore.loadSpendingLimit().then(() => {
-      currentMonth.value = getCurrentFullMonth()
-    })
-    
+  // Load any expenses based on the selections
+  expenseStore.loadMonthlyExpenses(selectedMonth.value, selectedYear.value).then(() =>{
+    expenseStore.loadSpendingLimit()
   })
 })
 
@@ -126,70 +122,17 @@ const expenses = computed (() => {
   return tmpExpenses
 })
 
-const monthlyLimit = computed (() => {
-  return expenseStore.getMonthlyLimit
-})
-
-const dailySpendingLimit = computed (() => {
-  const limit = monthlyLimit.value / getDaysInMonth(currentMonth.value, currentYear.value)
-  return Number(limit).toFixed(0)
-})
-
-const adjustedDailySpendingLimit = computed (() => {
-  const limit = remainingBudget.value / getDaysLeftInMonth()
-  return Number(limit).toFixed(0)
-})
-
-const monthlyTotal = computed (() => {
-  return expenseStore.getTotalSpent
-})
-
-const expenseAverage = computed(() => {
-  return expenseStore.getAverageExpenseAmount
-})
-
-const remainingBudget = computed(() => {
-  return expenseStore.getRemainingBudget
-})
-
-const percentBudgetSpent = computed(() => {
-  const percentSpent = ((monthlyTotal.value / monthlyLimit.value) * 100)
-  return Number(percentSpent).toFixed(0)
-})
-
-const percentMonthComplete = computed(() => {
-
-  const daysLeft = getDaysLeftInMonth()
-  const totalDays = getDaysInMonth(currentMonth.value, currentYear.value)
-  const daysPast = getDaysInMonth(currentMonth.value, currentYear.value) - daysLeft
-
-  const percentComplete = (daysPast / totalDays) * 100
-  return Number(percentComplete).toFixed(0)
-})
-
-
-const averageDailySpend = computed(() =>{
-  const tmp = expenseStore.getMonthlyExpenses
-  return averageByDate(tmp)
-})
-
-
-
-
 // STANDARD FUNCTIONS
 const addExpenseToDB = () => {
-  console.log('adding expense')
   addExpense.value.openAddExpenseDialog()
 }
 
 const loadExpenses = () => {
-  expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value).then(() =>{
-    console.log('done loading expenses')
-  })
+  expenseStore.setSelectedMonthAndYear(selectedMonth.value, selectedYear.value)
+  expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value)
 }
 
 const deleteExpenseFromDB = (expense) => {
-  console.log('Deleting...')
   deleteExpense.value.openDeleteExpenseDialog(expense)
 }
 
