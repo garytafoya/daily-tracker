@@ -126,9 +126,8 @@ const addExpenseToDB = () => {
 }
 
 const loadExpenses = () => {
-  expenseStore.setSelectedMonthAndYear(selectedMonth.value, selectedYear.value)
-
   // Load any expenses based on the selections
+  expenseStore.setSelectedMonthAndYear(selectedMonth.value, selectedYear.value)
   expenseStore.loadMonthlyExpenses(selectedMonth.value, selectedYear.value).then(() =>{
     expenseStore.loadMonthlySpendingLimit()
   })
@@ -144,7 +143,3 @@ const formatDateForTable = (dateStr) => {
 }
 
 </script>
-
-<style scoped>
-
-</style>

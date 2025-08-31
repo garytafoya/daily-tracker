@@ -55,7 +55,6 @@ export const useExpenseStore = defineStore('expenses', {
       return totalSpentInMonth(state.monthlyExpenses)
     },
     getRemainingBudget: (state) => {
-      // return (Number(state.monthlyLimit) - Number(totalSpentInMonth(state.monthlyExpenses)))
       return state.remainingBudget
     },
     getMonthlyLimit: (state) => {

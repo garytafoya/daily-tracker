@@ -16,7 +16,7 @@
     </v-container>
 
     <v-row>
-      <v-progress-linear class="mb-5 mt-3" color="primary" rounded-bar :model-value="percentSpent" height="20"></v-progress-linear>
+      <v-progress-linear class="mb-5 mt-3" color="primary" rounded-bar :model-value="percentSpent" height="30"></v-progress-linear>
     </v-row>
   </v-card>
   <set-spend-limit ref="setSpendLimit"></set-spend-limit>
