@@ -1,9 +1,5 @@
 <template>
   <v-card>
-    
-    <!-- {{spent}} -->
-
-
     <v-container>
       <v-row>
         <p class="text-overline ml-2">Daily Limit</p>
@@ -21,6 +17,8 @@
 import { ref } from 'vue'
 import { useExpenseStore } from '@/stores/expenseStore'
 const expenseStore = useExpenseStore()
+
+// const dailyLimit = ref('5')
 
 //Computed Functions
 const dailyLimit = computed (() => {

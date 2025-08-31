@@ -81,7 +81,7 @@ const submitSpendingLimit = async () => {
   dbSetSpendingLimit(
     { spendingLimit: limitValues.value[spendingLimit.value]}
   ).then(() => {
-    expenseStore.loadSpendingLimit().then(() => {
+    expenseStore.loadMonthlySpendingLimit().then(() => {
       dialog.value = false
     })
 

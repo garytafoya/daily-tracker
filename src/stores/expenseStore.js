@@ -1,7 +1,7 @@
 // Utilities
 import { defineStore } from 'pinia'
 import { dbGetExpensesByMonthYear, dbGetSpendingLimit } from '@/js/db'
-import { averageByDate, calculateTotalMonthlySpend, calculateAverageExpenseAmount } from '@/js/utilities'
+import { dailySpendingAverage, calculateDailySpendingLimit, daysLeftInMonth, totalSpentInMonth } from '@/js/utilities'
 
 
 export const useExpenseStore = defineStore('expenses', {
@@ -9,16 +9,17 @@ export const useExpenseStore = defineStore('expenses', {
     selectedMonth: '',
     selectedYear: '',
     monthlyLimit: 1100,
-    monthlyExpenses: []
+    monthlyExpenses: [],
+    remainingBudget: '',
+    dailySpendingLimit: ''
   }),
 
   actions: {
-
     setSelectedMonthAndYear(month, year) {
       this.selectedMonth = month
       this.selectedYear = year
     },
-    async loadSpendingLimit() {
+    async loadMonthlySpendingLimit() {
       try{
         const response = await dbGetSpendingLimit()
         this.monthlyLimit = response
@@ -31,10 +32,19 @@ export const useExpenseStore = defineStore('expenses', {
       try{
         const response = await dbGetExpensesByMonthYear(month, year)
         this.monthlyExpenses = response
+        this.updateRemainingBudget()
+        this.updateDailySpendingLimit()
       }
       catch (err) {
         console.log(err.message)
       }
+    },
+    updateRemainingBudget() {
+      this.remainingBudget = Number(this.monthlyLimit) - Number(totalSpentInMonth(this.monthlyExpenses))
+    },
+    updateDailySpendingLimit() {
+      const daysLeft = daysLeftInMonth(this.selectedMonth, this.selectedYear)
+      this.dailySpendingLimit = calculateDailySpendingLimit(this.selectedMonth, this.selectedYear, daysLeft, this.remainingBudget)
     }
   },
   getters: {
@@ -42,22 +52,23 @@ export const useExpenseStore = defineStore('expenses', {
       return state.monthlyExpenses
     },
     getTotalSpent: (state) => {
-      return calculateTotalMonthlySpend(state.monthlyExpenses)
+      return totalSpentInMonth(state.monthlyExpenses)
     },
     getRemainingBudget: (state) => {
-      return (Number(state.monthlyLimit) - Number(calculateTotalMonthlySpend(state.monthlyExpenses)))
+      // return (Number(state.monthlyLimit) - Number(totalSpentInMonth(state.monthlyExpenses)))
+      return state.remainingBudget
     },
     getMonthlyLimit: (state) => {
       return state.monthlyLimit
     },
-    getDailyLimit: (store) => {
-      return (store.getRemainingBudget / store.getRemainingDaysLeftInMonth).toFixed(0)
+    getDailyLimit: (state) => {
+      return state.dailySpendingLimit
     },
     getPercentSpent: (state) => {
-      return ((calculateTotalMonthlySpend(state.monthlyExpenses)/state.monthlyLimit) * 100)
+      return ((totalSpentInMonth(state.monthlyExpenses)/state.monthlyLimit) * 100)
     },
-    getAverageDailySpend: (state) => {
-      return averageByDate(state.monthlyExpenses)
+    getDailySpendingAverage: (state) => {
+      return dailySpendingAverage(state.monthlyExpenses)
     },
     getSelectedMonth: (state) => {
       return state.selectedMonth
@@ -66,16 +77,11 @@ export const useExpenseStore = defineStore('expenses', {
       return state.selectedYear
     },
     getRemainingDaysLeftInMonth: (state) => {
-      const monthIndex = new Date(`${state.selectedMonth} 1, ${state.selectedYear}`).getMonth()
-      const totalDays = new Date(state.selectedYear, monthIndex + 1, 0).getDate()
-      const today = new Date()
-      
-      if (today.getFullYear().toString() === state.selectedYear && today.getMonth() === monthIndex) {
-        return (totalDays - today.getDate())
-      }
-      return "--" // If not the current month
-    }
+      return daysLeftInMonth(state.selectedMonth, state.selectedYear)
+    },
+   
   }
+
 
 })
 

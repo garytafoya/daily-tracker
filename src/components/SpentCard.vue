@@ -45,7 +45,6 @@ const percentSpent = computed (() => {
 
 //Standard Functions
 const openSetSpendLimit = () => {
-  console.log('setting spend limit')
   setSpendLimit.value.openSetSpendingLimitDialog()
 }
 

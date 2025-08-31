@@ -47,13 +47,10 @@ export const dbGetSpendingLimit = async (spendingLimit) => {
 
 export const dbAddExpense = async (expense) => {
   try {
-
     const newExpenseData = {
       ... expense,
       id: generateBasicId(8)
     }
-
-    console.log(newExpenseData)
 
     // Reference to the document with a custom name
     const docRef = doc(db, "Expenses", newExpenseData.id)
@@ -76,7 +73,6 @@ export const dbGetExpensesByMonthYear = async (month, year) => {
       where('searchMonth', '==', month),
       where('searchYear', '==', year)
     )
-
     const querySnapshot = await getDocs(q)
     const expenses = querySnapshot.docs.map(doc => ({
       id: doc.id,

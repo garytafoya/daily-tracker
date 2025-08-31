@@ -83,18 +83,14 @@ import PercentSpentCard from '@/components/PercentSpentCard.vue'
 import AverageDailySpendCard from '@/components/AverageDailySpendCard.vue'
 import DailySpendCard from '@/components/DailySpendCard.vue'
 import DaysLeftCard from '@/components/DaysLeftCard.vue'
-
 import { useExpenseStore } from '@/stores/expenseStore'
 
 const expenseStore = useExpenseStore()
+const addExpense = ref('')
+const deleteExpense = ref('')
 
 const selectedMonth = ref('')
 const selectedYear = ref ('')
-
-const currentMonthAbbr = ref('')
-const currentYear = ref('')
-const addExpense = ref('')
-const deleteExpense = ref('')
 
 const headers = ref( [
   { title: 'DATE', align: 'center', key: 'date' },
@@ -110,8 +106,10 @@ onMounted(() => {
   expenseStore.setSelectedMonthAndYear(selectedMonth.value, selectedYear.value)
 
   // Load any expenses based on the selections
-  expenseStore.loadMonthlyExpenses(selectedMonth.value, selectedYear.value).then(() =>{
-    expenseStore.loadSpendingLimit()
+  expenseStore.loadMonthlySpendingLimit().then(() =>{
+    expenseStore.loadMonthlyExpenses(selectedMonth.value, selectedYear.value).then(() =>{
+      console.log('data completely loaded')
+    })
   })
 })
 
@@ -129,7 +127,11 @@ const addExpenseToDB = () => {
 
 const loadExpenses = () => {
   expenseStore.setSelectedMonthAndYear(selectedMonth.value, selectedYear.value)
-  expenseStore.loadMonthlyExpenses(currentMonthAbbr.value, currentYear.value)
+
+  // Load any expenses based on the selections
+  expenseStore.loadMonthlyExpenses(selectedMonth.value, selectedYear.value).then(() =>{
+    expenseStore.loadMonthlySpendingLimit()
+  })
 }
 
 const deleteExpenseFromDB = (expense) => {

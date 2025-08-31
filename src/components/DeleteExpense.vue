@@ -4,14 +4,11 @@
       max-width="600"
       class="dialog-top"
     >
-
-
     <v-card title="Delete This Expense?">
       <v-row class="mb-3" justify="center">
         <p class="text-h6 font-weight-light ml-2">${{expenseToDelete.amount}} on {{ formatDateForDialog(expenseToDelete.date) }}</p>
       </v-row>
-
-    <v-divider></v-divider>
+      <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
 
@@ -36,7 +33,6 @@
 import { ref, defineExpose } from 'vue'
 import { dbDeleteExpense } from '@/js/db.js'
 import { useExpenseStore } from '@/stores/expenseStore'
-import { getCurrentMonthAbbr } from '@/js/utilities.js'
 
 const expenseStore = useExpenseStore()
 const dialog = ref(false)
@@ -54,10 +50,12 @@ const formatDateForDialog = (dateStr) => {
 }
 
 const submitDeleteExpense = async () => {
+  const month = expenseStore.getSelectedMonth
+  const year = expenseStore.getSelectedYear
 
   dbDeleteExpense(expenseToDelete.value.id)
   .then(() => {
-    expenseStore.loadMonthlyExpenses(getCurrentMonthAbbr(), String(new Date().getFullYear()))
+    expenseStore.loadMonthlyExpenses(month, year)
     dialog.value = false
   })
 }
@@ -68,6 +66,7 @@ defineExpose({
 })
 
 </script>
+
 <style scoped>
 .dialog-top {
   align-items: flex-start !important;   /* vertical alignment */

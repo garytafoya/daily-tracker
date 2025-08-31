@@ -1,67 +1,38 @@
-export function getFullMonthFromShortMonth(shortMonth) {
-  const date = new Date(`${shortMonth} 1, 2000`) // year & day don’t matter
-  return date.toLocaleString('default', { month: 'long' })
+export function generateBasicId(length) {
+  var result = '';
+  var characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }
 
-
-
-
-
-export function getCurrentMonthAbbr() {
-  const date = new Date()
-  return date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
-}
-
-export function getCurrentFullMonth() {
-  const date = new Date()
-  return date.toLocaleString('default', { month: 'long' })
-}
-
-export const getDaysInMonth = (month, year) => {
+// DATA FUNCTIONS FOR CARDS
+export function daysLeftInMonth(month, year) {
   const monthIndex = new Date(`${month} 1, ${year}`).getMonth()
-  if (isNaN(monthIndex)) throw new Error('Invalid month name')
-
-  return new Date(year, monthIndex + 1, 0).getDate()
+  const totalDays = new Date(year, monthIndex + 1, 0).getDate()
+  const today = new Date()
+  
+  if (today.getFullYear().toString() === year && today.getMonth() === monthIndex) {
+    return ((totalDays - today.getDate())+1)
+  }
+  return "--" // If not the current month
 }
 
-
-
-
-// Functions that supply data to the cards
-
-export const getDaysLeftInMonth = (date = new Date()) => {
-  const year = date.getFullYear()
-  const month = date.getMonth() // 0-based
-  const today = date.getDate()
-
-  const totalDays = new Date(year, month + 1, 0).getDate()
-  return totalDays - today
-}
-
-export function calculateTotalMonthlySpend(expenses) {
+export function totalSpentInMonth(expenses) {
   return expenses.reduce((total, expense) => {
     const num = parseFloat(expense.amount)
     return total + (isNaN(num) ? 0 : num)
   }, 0)
 }
 
-export const calculateAverageExpenseAmount = (expenses) => {
-  const validNumbers = expenses
-    .map(amount => parseFloat(amount.value))
-    .filter(num => !isNaN(num))
-
-  if (validNumbers.length === 0) return 0
-
-  const total = validNumbers.reduce((sum, num) => sum + num, 0)
-  return total / validNumbers.length
-}
-
-
-export const averageByDate = (items = []) => {
+export const dailySpendingAverage = (items = []) => {
   if (!Array.isArray(items)) {
     throw new Error('Expected an array of objects')
   }
-
+  
   const grouped = {}
   items.forEach(({ date, amount }) => {
     const num = parseFloat(amount)
@@ -73,30 +44,24 @@ export const averageByDate = (items = []) => {
       grouped[date].count += 1
     }
   })
-
+  
   const totals = Object.entries(grouped).map(([date, { total, count }]) => ({
     date,
     total: total
   }))
-
+  
   if (!totals.length) return 0
   const sum = totals.reduce((total, item) => total + item.total, 0)
   return (sum / totals.length).toFixed(0)
 }
 
+export function calculateDailySpendingLimit(month, year, daysLeft, remainingBudget) {
+  const monthIndex = new Date(`${month} 1, ${year}`).getMonth()
+  const today = new Date()
 
-
-
-
-
-
-export function generateBasicId(length) {
-  var result = '';
-  var characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  if (today.getMonth() == monthIndex.toFixed(0)) {
+    return ( remainingBudget / daysLeft )
   }
-  return result;
+
+  return " --" // If not the current month 
 }

@@ -58,19 +58,14 @@
 
 <script setup>
 import { ref, defineExpose, watch, nextTick } from 'vue'
-import { getCurrentMonthAbbr } from '@/js/utilities.js'
 import { dbAddExpense } from '@/js/db.js'
 import { useExpenseStore } from '@/stores/expenseStore'
 
 const expenseStore = useExpenseStore()
 
-
 const dialog = ref(false)
-const today = new Date().toISOString().split('T')[0]
 const expenseDate = ref(new Date().toLocaleDateString('en-CA'))
-
 const expenseAmount = ref('')
-const input = ref('')
 const inputRef = ref(null)
 
 //always set focus to the input
@@ -90,23 +85,15 @@ const onlyAllowDigits = e => {
 const wholeNumberRule = v =>
   /^\d*$/.test(v) || 'Only whole numbers are allowed'
 
-
 const openAddExpenseDialog = () => {
   dialog.value = true
   expenseAmount.value = ''
 }
 
 const submitExpense = async () => {
-
   dialog.value = false
-  
-  const date = new Date(expenseDate.value)
-  console.log(date)
-  const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
-  const year = date.getFullYear()
-  console.log(month)
-  console.log(year)
-
+  const month = expenseStore.getSelectedMonth
+  const year = expenseStore.getSelectedYear
 
   dbAddExpense(
     {
@@ -116,7 +103,7 @@ const submitExpense = async () => {
     amount: expenseAmount.value
     }
   ).then(() => {
-    expenseStore.loadMonthlyExpenses(getCurrentMonthAbbr(), String(new Date().getFullYear()))
+    expenseStore.loadMonthlyExpenses(month, year)
   })
 }
 
@@ -124,10 +111,7 @@ const submitExpense = async () => {
 defineExpose({
   openAddExpenseDialog,
 })
-
-
 </script>
-
 
 <style scoped>
 .dialog-top {

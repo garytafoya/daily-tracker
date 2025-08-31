@@ -24,7 +24,7 @@ const expenseStore = useExpenseStore()
 
 //Computed Functions
 const aveSpend = computed (() => {
-  return expenseStore.getAverageDailySpend
+  return expenseStore.getDailySpendingAverage
 })
 
 
