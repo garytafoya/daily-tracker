@@ -70,8 +70,6 @@ const savedSpendingLimit = computed (() => {
 
 // STANDARD FUNCTIONS
 const openSetSpendingLimitDialog = () => {
-
-  console.log(savedSpendingLimit.value)
   const limitValueindex= Object.keys(limitValues.value).find(key => limitValues.value[key] === savedSpendingLimit.value)
   spendingLimit.value = limitValueindex
   dialog.value = true
@@ -81,10 +79,14 @@ const submitSpendingLimit = async () => {
   dbSetSpendingLimit(
     { spendingLimit: limitValues.value[spendingLimit.value]}
   ).then(() => {
+    const month = expenseStore.getSelectedMonth
+    const year = expenseStore.getSelectedYear
+    dialog.value = false
     expenseStore.loadMonthlySpendingLimit().then(() => {
-      dialog.value = false
+      expenseStore.loadMonthlyExpenses(month, year).then(() =>{
+        console.log('data completely loaded')
+      })
     })
-
   })
 }
 

@@ -47,10 +47,10 @@
 
     <v-row>
       <v-col>
-        <daily-spend-card></daily-spend-card>
+        <daily-spending-limits-card></daily-spending-limits-card>
       </v-col>
       <v-col>
-        <average-daily-spend-card></average-daily-spend-card>
+        <daily-average-spending-card></daily-average-spending-card>
       </v-col>
     </v-row>
 
@@ -80,8 +80,8 @@ import AddExpense from '@/components/AddExpense.vue'
 import DeleteExpense from '@/components/DeleteExpense.vue'
 import SpentCard from '@/components/SpentCard.vue'
 import PercentSpentCard from '@/components/PercentSpentCard.vue'
-import AverageDailySpendCard from '@/components/AverageDailySpendCard.vue'
-import DailySpendCard from '@/components/DailySpendCard.vue'
+import DailyAverageSpendingCard from '@/components/DailySpendingAverageCard.vue'
+import DailySpendingLimitsCard from '@/components/DailySpendingLimitsCard.vue'
 import DaysLeftCard from '@/components/DaysLeftCard.vue'
 import { useExpenseStore } from '@/stores/expenseStore'
 

@@ -2,10 +2,10 @@
   <v-card>
     <v-container>
       <v-row>
-        <p class="text-overline ml-2">Daily Limit</p>
+        <p class="text-overline ml-2">Daily Ave</p>
       </v-row>
       <v-row justify="space-between">
-        <p class="text-h4 font-weight-light ml-2">$20/${{ dailyLimit }}</p>
+        <p class="text-h4 font-weight-light ml-2">${{ aveSpend }}</p>
       </v-row>
     </v-container>
   
@@ -19,8 +19,9 @@ import { useExpenseStore } from '@/stores/expenseStore'
 const expenseStore = useExpenseStore()
 
 //Computed Functions
-const dailyLimit = computed (() => {
-  return expenseStore.getDailyLimit
+const aveSpend = computed (() => {
+  return expenseStore.getDailySpendingAverage
 })
+
 
 </script>

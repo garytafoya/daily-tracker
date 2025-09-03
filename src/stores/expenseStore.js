@@ -11,7 +11,8 @@ export const useExpenseStore = defineStore('expenses', {
     monthlyLimit: 1100,
     monthlyExpenses: [],
     remainingBudget: '',
-    dailySpendingLimit: ''
+    originalDailySpendingLimit: '',
+    updatedDailySpendingLimit: ''
   }),
 
   actions: {
@@ -32,19 +33,24 @@ export const useExpenseStore = defineStore('expenses', {
       try{
         const response = await dbGetExpensesByMonthYear(month, year)
         this.monthlyExpenses = response
-        this.updateRemainingBudget()
-        this.updateDailySpendingLimit()
+        this.calculateRemainingBudget()
+        this.calculateOriginalDailySpendingLimit()
+        this.calculateUpdatedDailySpendingLimit()
       }
       catch (err) {
         console.log(err.message)
       }
     },
-    updateRemainingBudget() {
+    calculateRemainingBudget() {
       this.remainingBudget = Number(this.monthlyLimit) - Number(totalSpentInMonth(this.monthlyExpenses))
     },
-    updateDailySpendingLimit() {
+    calculateOriginalDailySpendingLimit() {
+      const days = getDaysInMonth(this.selectedMonth, this.selectedYear)
+      this.originalDailySpendingLimit = (this.monthlyLimit/days).toFixed(0)
+    },
+    calculateUpdatedDailySpendingLimit() {
       const daysLeft = daysLeftInMonth(this.selectedMonth, this.selectedYear)
-      this.dailySpendingLimit = calculateDailySpendingLimit(this.selectedMonth, this.selectedYear, daysLeft, this.remainingBudget)
+      this.updatedDailySpendingLimit = calculateDailySpendingLimit(this.selectedMonth, this.selectedYear, daysLeft, this.remainingBudget).toFixed(0)
     }
   },
   getters: {
@@ -60,8 +66,11 @@ export const useExpenseStore = defineStore('expenses', {
     getMonthlyLimit: (state) => {
       return state.monthlyLimit
     },
-    getDailyLimit: (state) => {
-      returnFFdsdsdsds
+    getOriginalDailyLimit: (state) => {
+      return state.originalDailySpendingLimit
+    },
+    getUpdatedDailyLimit: (state) => {
+      return state.updatedDailySpendingLimit
     },
     getPercentSpent: (state) => {
       return ((totalSpentInMonth(state.monthlyExpenses)/state.monthlyLimit) * 100)
