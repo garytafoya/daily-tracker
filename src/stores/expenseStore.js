@@ -1,7 +1,7 @@
 // Utilities
 import { defineStore } from 'pinia'
 import { dbGetExpensesByMonthYear, dbGetSpendingLimit } from '@/js/db'
-import { dailySpendingAverage, calculateDailySpendingLimit, daysLeftInMonth, totalSpentInMonth } from '@/js/utilities'
+import { dailySpendingAverage, calculateDailySpendingLimit, getDaysInMonth, daysLeftInMonth, totalSpentInMonth } from '@/js/utilities'
 
 
 export const useExpenseStore = defineStore('expenses', {
@@ -61,7 +61,7 @@ export const useExpenseStore = defineStore('expenses', {
       return state.monthlyLimit
     },
     getDailyLimit: (state) => {
-      return state.dailySpendingLimit
+      returnFFdsdsdsds
     },
     getPercentSpent: (state) => {
       return ((totalSpentInMonth(state.monthlyExpenses)/state.monthlyLimit) * 100)
@@ -74,6 +74,9 @@ export const useExpenseStore = defineStore('expenses', {
     },
     getSelectedYear: (state) => {
       return state.selectedYear
+    },
+    getDaysInMonth: (state) => {
+      return getDaysInMonth(state.selectedMonth, state.selectedYear)
     },
     getRemainingDaysLeftInMonth: (state) => {
       return daysLeftInMonth(state.selectedMonth, state.selectedYear)
