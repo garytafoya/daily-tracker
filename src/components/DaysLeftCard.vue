@@ -9,7 +9,7 @@
         <p class="text-overline ml-2">Days Left</p>
       </v-row>
       <v-row justify="space-between">
-        <p class="text-h4 font-weight-light ml-2">{{daysLeftInMonth}}</p>
+        <p class="text-h4 font-weight-light ml-2">{{daysLeftInMonth}}/{{ daysInMonth }}</p>
       </v-row>
     </v-container>
   
@@ -26,6 +26,10 @@ const expenseStore = useExpenseStore()
 //Computed Functions
 const daysLeftInMonth = computed (() => {
   return expenseStore.getRemainingDaysLeftInMonth
+})
+
+const daysInMonth = computed (() => {
+  return expenseStore.getDaysInMonth
 })
 
 </script>

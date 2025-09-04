@@ -16,7 +16,15 @@
     </v-container>
 
     <v-row>
-      <v-progress-linear class="mb-5 mt-3" color="primary" rounded-bar :model-value="percentSpent" height="30"></v-progress-linear>
+      <v-progress-linear
+        class="mb-5 mt-3"
+        color="success"
+        rounded-bar
+        striped
+        :model-value="percentSpent"
+        height="30">
+        <strong>{{ percentSpent }}%</strong>
+      </v-progress-linear>
     </v-row>
   </v-card>
   <set-spend-limit ref="setSpendLimit"></set-spend-limit>
@@ -40,7 +48,7 @@ const monthlyLimit = computed (() => {
 })
 
 const percentSpent = computed (() => {
-  return expenseStore.getPercentSpent
+  return expenseStore.getPercentSpent.toFixed(0)
 })
 
 //Standard Functions

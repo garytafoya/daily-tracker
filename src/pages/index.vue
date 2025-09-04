@@ -8,7 +8,6 @@
     <v-row justify="center">
       <v-col>
         <v-select
-          class="ml-2"
           label="Month"
           v-model="selectedMonth"
           :items="['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']"
@@ -17,7 +16,6 @@
       </v-col>
       <v-col>
       <v-select
-        class="mr-2"
         label="Year"
         v-model="selectedYear"
         :items="['2025']"
@@ -38,10 +36,10 @@
 
     <v-row>
       <v-col>
-        <percent-spent-card></percent-spent-card>
+        <days-left-card></days-left-card>
       </v-col>
       <v-col>
-        <days-left-card></days-left-card>
+        <percent-of-month-card></percent-of-month-card>
       </v-col>
     </v-row>
 
@@ -54,22 +52,33 @@
       </v-col>
     </v-row>
 
-    <v-data-table
-      class="mt-5"
-      :items="expenses"
-      :headers="headers"
-      items-per-page="-1"
-      hide-default-footer
-      density="compact"
-    >
-      <template v-slot:item="{ item }">
-        <tr class="text-no-wrap">
-          <td class="text-h6 text-center">{{ formatDateForTable(item.date) }}</td>
-          <td class="text-h6 text-center" @click="deleteExpenseFromDB(item)">${{ item.amount }}</td>
-        </tr>
-      </template>
-    </v-data-table>
+    <!-- EXPENSES -->
+    <v-container class="mt-4">
+      <v-row justify="center">
+        <p class="text-h5">EXPENSES</p>
+      </v-row>
 
+      <v-row justify="space-around">
+        <p class="text-overline">DATE</p>
+        <p class="text-overline">AMOUNT</p>
+      </v-row>
+    </v-container>
+
+    <div v-for="expense in expenses" :key="expense.id">
+      <v-card
+        class="mb-2"
+        color="surface-variant"
+        variant="outlined"
+        @click="deleteExpenseFromDB(expense)"
+      >
+        <v-container>
+          <v-row justify="space-around">
+            <p class="text-h5 text-white">{{ formatDateForTable(expense.date) }}</p>
+            <p class="text-h5 text-white">${{ expense.amount }}</p>
+          </v-row>
+        </v-container>
+      </v-card>
+    </div>
   </v-container>
   <add-expense ref="addExpense"></add-expense>
   <delete-expense ref="deleteExpense"></delete-expense>
@@ -80,6 +89,7 @@ import AddExpense from '@/components/AddExpense.vue'
 import DeleteExpense from '@/components/DeleteExpense.vue'
 import SpentCard from '@/components/SpentCard.vue'
 import PercentSpentCard from '@/components/PercentSpentCard.vue'
+import PercentOfMonthCard from '@/components/PercentOfMonthCard.vue'
 import DailyAverageSpendingCard from '@/components/DailySpendingAverageCard.vue'
 import DailySpendingLimitsCard from '@/components/DailySpendingLimitsCard.vue'
 import DaysLeftCard from '@/components/DaysLeftCard.vue'

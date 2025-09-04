@@ -10,12 +10,16 @@
         <v-slider
           class="ml-0 mr-0 text-h6"
           color="primary"
-          :max="5"
+          :max="6"
           :ticks="limitValues"
           show-ticks="always"
           direction="vertical"
           step="1"
-          tick-size="6"
+          tick-size="0"
+          track-color="green"
+          track-size="8"
+          thumb-size="25"
+          thumb-color="white"
           label="Spending Limit"
           v-model="spendingLimit"
         ></v-slider>
@@ -59,7 +63,8 @@ const limitValues = ref({
   2: 1200,
   3: 1300,
   4: 1400,
-  5: 1500
+  5: 1500,
+  6: 1600
 })
 
 // COMPUTED FUNCTIONS

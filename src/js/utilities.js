@@ -42,6 +42,46 @@ export function totalSpentInMonth(expenses) {
   }, 0)
 }
 
+export function averageDailyExpenseToDate(expenses, monthAbbrev, year) {
+
+  console.log('Month: ' + monthAbbrev )
+  console.log('Year: ' + year )
+
+  // map 3-letter month to number (1-based)
+  const monthMap = {
+    JAN: 1, FEB: 2, MAR: 3, APR: 4,
+    MAY: 5, JUN: 6, JUL: 7, AUG: 8,
+    SEP: 9, OCT: 10, NOV: 11, DEC: 12
+  }
+
+  const month = monthMap[monthAbbrev.toUpperCase()]
+  if (!month) {
+    throw new Error(`Invalid month abbreviation: ${monthAbbrev}`)
+  }
+
+  const today = new Date()
+  const isThisMonth = today.getFullYear() == year && (today.getMonth() + 1) === month
+  const daysInMonth = new Date(year, month, 0).getDate()
+
+  // if it's the current month, only count up to today
+  const daysToCount = isThisMonth ? today.getDate() : daysInMonth
+  const totalsByDay = Array(daysToCount).fill(0)
+
+  expenses.forEach(({ date, amount }) => {
+    const [y, m, d] = date.split('-').map(Number)
+
+    if (y == year && m === month) {
+      totalsByDay[d - 1] += Number(amount) || 0
+    }
+  })
+  const grandTotal = totalsByDay.reduce((sum, daily) => sum + daily, 0)
+  
+  return (grandTotal / daysToCount).toFixed(0)
+}
+
+
+
+
 export const dailySpendingAverage = (items = []) => {
   if (!Array.isArray(items)) {
     throw new Error('Expected an array of objects')
