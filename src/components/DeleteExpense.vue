@@ -4,10 +4,11 @@
       max-width="600"
       class="dialog-top"
     >
-    <v-card title="Delete This Expense?">
-      <v-row class="mb-3" justify="center">
-        <p class="text-h6 font-weight-light ml-2">${{expenseToDelete.amount}} on {{ formatDateForDialog(expenseToDelete.date) }}</p>
-      </v-row>
+    <v-card title="Delete This Expense?">      
+      <p class="text-h4 text-center font-weight-light ml-2"><strong>${{expenseToDelete.amount}}</strong> <span class="text-h5 font-weight-light">on</span> <strong>{{ formatDateForDialog(expenseToDelete.date) }}</strong></p>
+      
+      <!-- REMOVE THIS LATER -->
+      <p class="text-overline ml-2">{{ expenseToDelete.id }}</p>
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>

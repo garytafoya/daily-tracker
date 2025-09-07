@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddExpense: typeof import('./src/components/AddExpense.vue')['default']
+    AddExpenseOld: typeof import('./src/components/AddExpense-old.vue')['default']
     DailySpendingAverageCard: typeof import('./src/components/DailySpendingAverageCard.vue')['default']
     DailySpendingLimitsCard: typeof import('./src/components/DailySpendingLimitsCard.vue')['default']
     DaysLeftCard: typeof import('./src/components/DaysLeftCard.vue')['default']

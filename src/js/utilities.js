@@ -43,10 +43,6 @@ export function totalSpentInMonth(expenses) {
 }
 
 export function averageDailyExpenseToDate(expenses, monthAbbrev, year) {
-
-  console.log('Month: ' + monthAbbrev )
-  console.log('Year: ' + year )
-
   // map 3-letter month to number (1-based)
   const monthMap = {
     JAN: 1, FEB: 2, MAR: 3, APR: 4,

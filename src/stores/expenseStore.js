@@ -60,7 +60,6 @@ export const useExpenseStore = defineStore('expenses', {
     },
     calculateAverageDailyExpenseToDate() {
       this.averageDailyExpenseToDate = averageDailyExpenseToDate(this.monthlyExpenses, this.selectedMonth, this.selectedYear )
-      console.log(this.averageDailyExpenseToDate)
     },
     calculateDaysInMonth() {
       this.daysInMonth = getDaysInMonth(this.selectedMonth, this.selectedYear)

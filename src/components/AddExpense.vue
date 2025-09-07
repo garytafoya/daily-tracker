@@ -6,10 +6,10 @@
       class="dialog-top"
     >
       <v-card title="Add Expense">
-        <v-card-text>
+        <v-card-text class="pb-2">
           <v-row dense>
-            <v-col cols="12">
-              <p class="">Date *</p>
+            <v-col cols="12" class="pb-0">
+              <p class="text-overline">Date *</p>
               <v-text-field
                 variant="outlined"
                 density="comfortable"
@@ -19,7 +19,7 @@
               >
               </v-text-field>
 
-              <p class="">Expense Amount *</p>
+              <p class="text-overline">Expense Amount *</p>
               <v-text-field
                 ref="inputRef"
                 type="number" 
@@ -27,10 +27,28 @@
                 density="comfortable"
                 v-model="expenseAmount"
                 @keypress="onlyAllowDigits"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-
+              ></v-text-field>
+            </v-col>
+          </v-row>
+            
+          <!-- CATEGORY CHIPS -->
+          <p class="text-overline pb-0">Categories</p>
+          <v-chip-group
+            class="d-flex justify-center"
+            selected-class="text-primary"
+            column
+            v-model="selectedCategory"
+          >
+            <v-chip
+            v-for="(chip, index) in tags"
+            :key="index"
+            :value="chip"
+            size="large"
+            color="primary"
+            >
+              {{ chip }}
+            </v-chip>
+          </v-chip-group>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -67,6 +85,17 @@ const dialog = ref(false)
 const expenseDate = ref(new Date().toLocaleDateString('en-CA'))
 const expenseAmount = ref('')
 const inputRef = ref(null)
+const selectedCategory = ref('')
+
+const tags= ref([
+  'Gas',
+  'Groceries',
+  'Shopping',
+  'Amazon',
+  'Restaurant',
+  'Coffee',
+  'Other'
+])
 
 //always set focus to the input
 watch(dialog, async (val) => {
@@ -88,6 +117,7 @@ const wholeNumberRule = v =>
 const openAddExpenseDialog = () => {
   dialog.value = true
   expenseAmount.value = ''
+  selectedCategory.value = ''
 }
 
 const submitExpense = async () => {
@@ -95,12 +125,15 @@ const submitExpense = async () => {
   const month = expenseStore.getSelectedMonth
   const year = expenseStore.getSelectedYear
 
+  if (selectedCategory.value == '') selectedCategory.value = 'Other'
+
   dbAddExpense(
     {
     date: expenseDate.value,
     searchMonth: month,
     searchYear: year.toString(),
-    amount: expenseAmount.value
+    amount: expenseAmount.value,
+    category: selectedCategory.value
     }
   ).then(() => {
     expenseStore.loadMonthlyExpenses(month, year)

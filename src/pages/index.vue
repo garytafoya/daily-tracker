@@ -58,9 +58,16 @@
         <p class="text-h5">EXPENSES</p>
       </v-row>
 
-      <v-row justify="space-around">
-        <p class="text-overline">DATE</p>
-        <p class="text-overline">AMOUNT</p>
+      <v-row>
+        <v-col cols="4" class="pb-0 pt-1">
+          <p class="text-overline text-center">DATE</p>
+        </v-col>
+        <v-col cols="4" class="pb-0 pt-1">
+          <p class="text-overline text-center">AMOUNT</p>
+        </v-col>
+        <v-col cols="4" class="pb-0 pt-1">
+          <p class="text-overline text-center">CATEGORY</p>
+        </v-col>
       </v-row>
     </v-container>
 
@@ -71,11 +78,25 @@
         variant="outlined"
         @click="deleteExpenseFromDB(expense)"
       >
-        <v-container>
-          <v-row justify="space-around">
-            <p class="text-h5 text-white">{{ formatDateForTable(expense.date) }}</p>
-            <p class="text-h5 text-white">${{ expense.amount }}</p>
+        <v-container class="pb-2 pt-2">
+          <v-row>
+            <v-col cols="4">
+              <p class="text-h5 text-white text-center">{{ formatDateForTable(expense.date) }}</p>
+            </v-col>
+            <v-col cols="4">
+              <p class="text-h5 text-white text-center">${{ expense.amount }}</p>
+            </v-col>
+            <v-col cols="4">
+            <div v-if="expense.category" class="d-flex justify-center">
+                <v-chip color="white" variant="outlined" size="small">{{ expense.category }}</v-chip>
+              </div> 
+              <div v-else>
+                <v-chip color="white" variant="outlined" size="small">Unknown</v-chip>
+              </div>
+            </v-col>
           </v-row>
+
+
         </v-container>
       </v-card>
     </div>
