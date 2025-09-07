@@ -56,7 +56,8 @@ export const useExpenseStore = defineStore('expenses', {
     },
     calculateUpdatedDailySpendingLimit() {
       const daysLeft = daysLeftInMonth(this.selectedMonth, this.selectedYear)
-      this.updatedDailySpendingLimit = calculateDailySpendingLimit(this.selectedMonth, this.selectedYear, daysLeft, this.remainingBudget).toFixed(0)
+      const spendingLimt = calculateDailySpendingLimit(this.selectedMonth, this.selectedYear, daysLeft, this.remainingBudget)
+      this.updatedDailySpendingLimit = spendingLimt.toFixed(0)
     },
     calculateAverageDailyExpenseToDate() {
       this.averageDailyExpenseToDate = averageDailyExpenseToDate(this.monthlyExpenses, this.selectedMonth, this.selectedYear )
